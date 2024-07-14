@@ -5,19 +5,21 @@ from util.constant import Bike, Colors, Screen
 
 
 class Player:
-    player_id = 0
 
-    def __init__(self, color, position: Position, player_id=None, progressbar_position=None):
-        self.player_id, Player.player_id = Player.player_id, Player.player_id+1
+    def __init__(self, color, position: Position, progressbar_position=None):
         self.position = position
         self.color = color
         self.width = Bike.BIKE_WIDTH
         self.height = Bike.BIKE_HEIGHT
         self.bike = pygame.Surface((self.width, self.height))
         self.bike.fill(color)
+        self.name = None
         if progressbar_position is None:
             progressbar_position = Position(self.position.x, self.position.y + 80)
         self.progressbar = Progressbar(self.color, progressbar_position)
+
+    def set_name(self, name):
+        self.name = name
 
     def check_win(self):
         return self.position.x >= Screen.MAX_DISTANCE

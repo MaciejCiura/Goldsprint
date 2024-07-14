@@ -21,7 +21,7 @@ class RaceScene(scenes.scene.Scene):
     def _count_elapsed_time(self):
         return pygame.time.get_ticks() - self.start_time
 
-    def update_entities(self):
+    def _update_entities(self):
         for player in self.players:
             if player.check_win():
                 self.winner = player
@@ -38,7 +38,7 @@ class RaceScene(scenes.scene.Scene):
         self.screen.fill(Colors.WHITE)
         for player in self.players:
             player.display(self.screen)
-        pygame.display.flip()
 
     def update_state(self) -> bool:
+        self._update_entities()
         return self.winner is not None
