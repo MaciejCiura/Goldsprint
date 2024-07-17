@@ -3,7 +3,7 @@
 class Bike:
     BIKE_WIDTH = 50
     BIKE_HEIGHT = 50
-    MOVE_INCREMENT = 20
+    MOVE_INCREMENT = 100
 
 # Colors
 class Colors:
@@ -27,3 +27,4 @@ class Screen:
     PROGRESSBAR2_Y = 120
     PROGRESSBAR_INITIAL_VALUE = 20
     WINDOW_CAPTION="Goldsprint"
+    FONT_SIZE=74

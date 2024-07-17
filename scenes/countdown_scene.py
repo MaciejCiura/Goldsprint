@@ -4,14 +4,15 @@ import scenes.scene
 
 from entities.text import Text
 
-from util.constant import Colors, Screen
+from util.constant import Colors
 from util.position import Position
 
 
-class StartScene(scenes.scene.Scene):
+class CountdownScene(scenes.scene.Scene):
+
     def __init__(self, screen: pygame.Surface):
         super().__init__(screen)
-        self.text = Text("Goldsprint", position=Position(0, 0))
+        self.text = Text("Ready...", position=Position(0, 0))
         self.button_pressed = False
 
     def key_down(self, keyname: int) -> None:

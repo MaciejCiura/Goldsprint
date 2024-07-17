@@ -1,9 +1,11 @@
 import pygame
+from scenes.countdown_scene import CountdownScene
 from scenes.race_scene import RaceScene
 from scenes.start_scene import StartScene
 from scenes.winner_scene import WinnerScene
 
 from util.constant import Screen
+
 
 
 class SceneManager:
@@ -30,6 +32,9 @@ class SceneManager:
 
     def _next_scene(self):
         if isinstance(self.active_scene, StartScene):
+            self.active_scene = CountdownScene(self.screen)
+
+        elif isinstance(self.active_scene, CountdownScene):
             self.active_scene = RaceScene(self.screen)
 
         elif isinstance(self.active_scene, RaceScene):
