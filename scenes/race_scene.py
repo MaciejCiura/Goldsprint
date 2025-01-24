@@ -8,23 +8,21 @@ class RaceScene(scenes.scene.Scene):
 
     def __init__(self, screen: pygame.Surface):
         super().__init__(screen)
-        self.players = [Player(color=Colors.RED, x=Screen.STARTING_POSITION, y=Screen.BIKE1_Y),
-                        Player(color=Colors.BLUE, x=Screen.STARTING_POSITION, y=Screen.BIKE2_Y)]
+        self.players = [Player("Dupa", color=Colors.RED, x=Screen.STARTING_POSITION, y=Screen.BIKE1_Y),
+                        Player("Kupa", color=Colors.BLUE, x=Screen.STARTING_POSITION, y=Screen.BIKE2_Y)]
         for player in self.players:
             player.racing = True
         self.racing = True
         self.start_time = pygame.time.get_ticks()
+        self.players[0].set_time(self.start_time)
+        self.players[1].set_time(self.start_time)
 
-    def _count_elapsed_time(self):
-        return pygame.time.get_ticks() - self.start_time
+    def _count_elapsed_time(self, time):
+        return time - self.start_time
 
     def _update_entities(self):
         for player in self.players:
             player.update()
-            if not player.racing:
-                player.racing = False
-                player.time = self._count_elapsed_time()
-                print(self._count_elapsed_time())
 
     def _finish(self):
         if not self.racing:
@@ -48,4 +46,6 @@ class RaceScene(scenes.scene.Scene):
         self._update_entities()
         if all(not player.racing for player in self.players):
             self.racing = False
+            winner = min(self.players, key=lambda player: player.time)
+            winner.won = True
         return not self.racing

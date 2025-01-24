@@ -14,4 +14,5 @@ class Progressbar(Entity):
         self.value = self.player.distance
 
     def draw(self, screen):
-        pygame.draw.rect(screen, self.player.color, (self.x, self.y, self.value + self.player.width, self.height))
+        if self.visible:
+            pygame.draw.rect(screen, self.player.color, (self.x, self.y, self.value + self.player.width, self.height))

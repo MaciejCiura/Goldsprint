@@ -12,6 +12,10 @@ class WinnerScene(scenes.scene.Scene):
         self.players = players
         self.button_pressed = False
 
+    def _update_entities(self):
+        for player in self.players:
+            player.update()
+
     def key_down(self, keyname: int) -> None:
         self.button_pressed = True
 
@@ -22,4 +26,5 @@ class WinnerScene(scenes.scene.Scene):
         pygame.display.flip()
 
     def update_state(self) -> bool:
+        self._update_entities()
         return self.button_pressed
