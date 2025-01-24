@@ -3,9 +3,7 @@ from scenes.countdown_scene import CountdownScene
 from scenes.race_scene import RaceScene
 from scenes.start_scene import StartScene
 from scenes.winner_scene import WinnerScene
-
 from util.constant import Screen
-
 
 
 class SceneManager:
@@ -23,10 +21,15 @@ class SceneManager:
             if event.type == pygame.QUIT:
                 return False
             elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return False
                 self.active_scene.key_down(event.key)
         self.active_scene.display()
+
         if self.active_scene.update_state():
             self._next_scene()
+            self.active_scene.setup()
+
         self.clock.tick(Screen.FRAMERATE)
         return True
 
@@ -38,7 +41,7 @@ class SceneManager:
             self.active_scene = RaceScene(self.screen)
 
         elif isinstance(self.active_scene, RaceScene):
-            self.active_scene = WinnerScene(self.screen, self.active_scene.winner)
+            self.active_scene = WinnerScene(self.screen, self.active_scene.players)
 
         elif isinstance(self.active_scene, WinnerScene):
             self.active_scene = StartScene(self.screen)

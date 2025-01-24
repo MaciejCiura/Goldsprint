@@ -1,19 +1,17 @@
 import pygame
 
+from entities.entity import Entity
 from util.constant import Screen
-from util.position import Position
 
 
-class Progressbar:
-    def __init__(self, color, position: Position):
-        self.height = Screen.PROGRESSBAR_HEIGHT
-        self.width = Screen.PROGRESSBAR_WIDTH
-        self.position = position
-        self.value = position.x
-        self.color = color
+class Progressbar(Entity):
+    def __init__(self, player, height=Screen.PROGRESSBAR_HEIGHT, width=Screen.PROGRESSBAR_WIDTH):
+        super().__init__(player.x, player.y + 80, height, width)
+        self.value = player.distance  # TODO change to %
+        self.player = player
 
-    def update(self, value):
-        self.value = value
+    def update(self):
+        self.value = self.player.distance
 
-    def display(self, screen):
-        pygame.draw.rect(screen, self.color, (self.position.x, self.position.y, self.value, self.height))
+    def draw(self, screen):
+        pygame.draw.rect(screen, self.player.color, (self.x, self.y, self.value + self.player.width, self.height))

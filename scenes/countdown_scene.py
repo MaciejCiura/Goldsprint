@@ -9,10 +9,8 @@ from util.position import Position
 
 
 class CountdownScene(scenes.scene.Scene):
-
-    def __init__(self, screen: pygame.Surface):
-        super().__init__(screen)
-        self.text = Text("Ready...", position=Position(0, 0))
+    def setup(self) -> None:
+        self.text = Text("Ready...", 0, 0)
         self.button_pressed = False
 
     def key_down(self, keyname: int) -> None:
@@ -21,7 +19,7 @@ class CountdownScene(scenes.scene.Scene):
     def display(self):
         self.screen.fill(Colors.WHITE)
         self.text.center()
-        self.text.blit(self.screen)
+        self.text.draw(self.screen)
 
     def update_state(self) -> bool:
         # read names and other properites
