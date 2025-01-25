@@ -1,7 +1,6 @@
 import pygame
 from entities.entity import Entity
 from util.constant import Colors, Screen
-from util.position import Position
 
 
 class Text(Entity):

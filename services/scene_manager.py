@@ -7,10 +7,11 @@ from util.constant import Screen
 
 
 class SceneManager:
-    def __init__(self, screen):
+    def __init__(self, screen, data_handler):
         self.screen = screen
         self.active_scene = StartScene(screen)
         self.clock = pygame.time.Clock()
+        self.data_handler = data_handler
 
     def key_down(self, keyname: int) -> None:
         # if isinstance(self.active_scene, StartScene):
@@ -38,7 +39,7 @@ class SceneManager:
             self.active_scene = CountdownScene(self.screen)
 
         elif isinstance(self.active_scene, CountdownScene):
-            self.active_scene = RaceScene(self.screen)
+            self.active_scene = RaceScene(self.screen, self.data_handler)
 
         elif isinstance(self.active_scene, RaceScene):
             self.active_scene = WinnerScene(self.screen, self.active_scene.players)

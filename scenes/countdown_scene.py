@@ -1,11 +1,8 @@
 import pygame
 
 import scenes.scene
-
 from entities.text import Text
-
 from util.constant import Colors
-from util.position import Position
 
 
 class CountdownScene(scenes.scene.Scene):

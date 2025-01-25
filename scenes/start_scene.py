@@ -5,7 +5,6 @@ import scenes.scene
 from entities.text import Text
 
 from util.constant import Colors, Screen
-from util.position import Position
 
 
 class StartScene(scenes.scene.Scene):

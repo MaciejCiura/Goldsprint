@@ -6,9 +6,10 @@ from util.constant import Bike, Colors, Screen
 
 
 class Player(Entity):
-    def __init__(self, name, x=Screen.STARTING_POSITION, y=Screen.BIKE1_Y,
+    def __init__(self, player_id, name, x=Screen.STARTING_POSITION, y=Screen.BIKE1_Y,
                  hight=Bike.BIKE_HEIGHT, width=Bike.BIKE_WIDTH, color=Colors.BLACK):
         super().__init__(x, y, hight, width)
+        self.id = player_id
         self.name = name
         self.distance = 0
         self.speed = 0
@@ -25,6 +26,7 @@ class Player(Entity):
         self.name_txt.visible = True
         self.speed_txt.visible = False
         self.time_txt.visible = False
+        self.log_data = None
 
     def update(self):
         # get distance from sensor
@@ -38,6 +40,9 @@ class Player(Entity):
         self.progressbar.update()
         if self.won:
             self.placeholder.fill(Colors.GOLD)
+
+    def log(self, timestamp, speed, distance):
+        pass
 
     def set_name(self, name):
         self.name = name
