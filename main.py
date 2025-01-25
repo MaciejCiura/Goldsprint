@@ -1,5 +1,9 @@
 import sys
-from services.game_manager import GameManager
+
+from core.game_manager import GameManager
+
+init_data_handler = None
+
 
 game = GameManager()
 game.setup()

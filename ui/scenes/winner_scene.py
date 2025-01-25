@@ -1,19 +1,19 @@
 import pygame
 
-import scenes.scene
+import ui.scenes.scene
 
 from util.constant import Colors
 
 
-class WinnerScene(scenes.scene.Scene):
+class WinnerScene(ui.scenes.scene.Scene):
 
-    def __init__(self, screen: pygame.Surface, players):
+    def __init__(self, screen: pygame.Surface, player_views):
         super().__init__(screen)
-        self.players = players
+        self.player_views = player_views
         self.button_pressed = False
 
     def _update_entities(self):
-        for player in self.players:
+        for player in self.player_views:
             player.update()
 
     def key_down(self, keyname: int) -> None:
@@ -21,7 +21,7 @@ class WinnerScene(scenes.scene.Scene):
 
     def display(self):
         self.screen.fill(Colors.WHITE)
-        for player in self.players:
+        for player in self.player_views:
             player.draw(self.screen)
         pygame.display.flip()
 

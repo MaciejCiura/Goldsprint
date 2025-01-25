@@ -1,7 +1,6 @@
 from enum import IntEnum, auto
 
 import pygame
-from services.entity_manager import EntityManager
 
 class Scene:
     """
@@ -18,7 +17,6 @@ class Scene:
 
     def __init__(self, screen: pygame.Surface) -> None:
         self.screen = screen
-        self.entityManager = EntityManager(screen)
 
     def setup(self) -> None:
         """

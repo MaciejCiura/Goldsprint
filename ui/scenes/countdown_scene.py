@@ -1,16 +1,13 @@
 import pygame
 
-import scenes.scene
-
-from entities.text import Text
-
-from util.constant import Colors, Screen
+import ui.scenes.scene
+from ui.text import Text
+from util.constant import Colors
 
 
-class StartScene(scenes.scene.Scene):
-    def __init__(self, screen: pygame.Surface):
-        super().__init__(screen)
-        self.text = Text("Goldsprint", 0, 0)
+class CountdownScene(ui.scenes.scene.Scene):
+    def setup(self) -> None:
+        self.text = Text("Ready...", 0, 0)
         self.button_pressed = False
 
     def key_down(self, keyname: int) -> None:

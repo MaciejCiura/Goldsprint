@@ -1,13 +1,26 @@
 import pygame
+from util.constant import Bike
 
 
 class PlayerManager:
-    def __init__(self, players):
+    def __init__(self, players, data_handler):
         self.players = players
         self.start_time = pygame.time.get_ticks()
+        self.data_handler = data_handler
 
     def update(self):
+        '''
+        if (!data_handler.empty())
+            process frame
+            read {[id: 0, distance, 100], [id: 1, distance, 120]}
+            for player in self.players
+                player.move(timestamp, distance)
+            if both players passed max_distance
+
+        '''
         for player in self.players:
+            if player.racing:
+                player.move(2)
             player.update()
 
     def start_race(self, time=None):
