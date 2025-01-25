@@ -1,8 +1,6 @@
 import pygame
-from core.race_manager import RaceManager
 import ui.scenes.scene
 from ui.player_view import PlayerView
-from core.player_manager import PlayerManager
 from util.constant import Screen, Colors, Bike
 
 

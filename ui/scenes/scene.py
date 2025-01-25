@@ -1,6 +1,6 @@
 from enum import IntEnum, auto
-
 import pygame
+
 
 class Scene:
     """
@@ -40,25 +40,16 @@ class Scene:
         """
         pass
 
-    # def motion(self, position: Position) -> None:
-    #     """
-    #     Handle motion event.
-    #
-    #     Keyword arguments:
-    #     position -- the position of the mouse
-    #     """
-    #     pass
-    #
-    # def click(self, button: int, position: Position):
-    #     """
-    #     Handle the triggering of a click event.
-    #
-    #     Keyword arguments:
-    #     button -- an integer value representing which mouse button has been pressed
-    #     (1 for left button, 2 for middle button, 3 for right button)
-    #     position -- the position of the mouse
-    #     """
-    #     pass
+    def click(self, button: int, x: int, y: int):
+        """
+        Handle the triggering of a click event.
+
+        Keyword arguments:
+        button -- an integer value representing which mouse button has been pressed
+        (1 for left button, 2 for middle button, 3 for right button)
+        position -- the position of the mouse
+        """
+        pass
 
     def button_down(self, button: int) -> None:
         """

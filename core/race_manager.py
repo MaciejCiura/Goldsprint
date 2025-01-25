@@ -20,24 +20,18 @@ class RaceManager:
             player.distance = 0
             player.racing = True
             player.won = False
-            self.winner = player
         self.start_time = time.time()
 
     def handle_data(self, player_id, distance):
         player = self.players[player_id]
-        if player.distance >= self.finish_distance:  # TODO change to dynamic distance parameter
-            if player.racing:
+        if player.racing:
+            player.move(distance)
+            if player.distance >= self.finish_distance:  # TODO change to dynamic distance parameter
+                player.move(self.finish_distance-player.distance)
                 player.racing = False
                 player.time = time.time() - self.start_time
 
-        if player.racing:
-            player.move(distance)
-
-        if not self.racing():
-            if all(not player.racing for player in self.players.values()):
-                winner = min(self.players.values(), key=lambda player: player.time)
-                winner.won = True
-            self.race_active = False
+        self._finish_race()
         '''
         if (!data_handler.empty())
             process frame
@@ -46,6 +40,13 @@ class RaceManager:
                 player.move(timestamp, distance)
             if both players passed max_distance
         '''
+
+    def _finish_race(self):
+        if all(not player.racing for player in self.players.values()):
+            winner = min(self.players.values(), key=lambda player: player.time)
+            self.winner = winner
+            winner.won = True
+            self.race_active = False
 
     def racing(self):
         return any(player.racing for player in self.players.values())
