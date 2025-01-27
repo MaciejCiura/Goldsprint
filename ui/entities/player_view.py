@@ -1,8 +1,8 @@
 import pygame
-from ui.entity import Entity
-from ui.text import Text
-from ui.progressbar import Progressbar
-from util.constant import Bike, Colors, Screen
+from ui.entities.entity import Entity
+from ui.entities.text import Text
+from ui.entities.progressbar import Progressbar
+from util.constant import Bike, Colors
 
 
 class PlayerView(Entity):
@@ -22,11 +22,8 @@ class PlayerView(Entity):
         self.time_txt.visible = False
 
     def update(self):
-        # get distance from sensor
-        if self.player.racing:
-            self.progressbar.update()
-        else:
-            self.progressbar.visible = False
+        self.progressbar.update()
+        if not self.player.racing:
             self.time_txt.set(str(self.player.time))
             self.time_txt.visible = True
             if self.player.won:

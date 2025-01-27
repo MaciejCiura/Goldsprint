@@ -1,5 +1,5 @@
 import pygame
-from ui.entity import Entity
+from ui.entities.entity import Entity
 from util.constant import Colors, Screen
 
 

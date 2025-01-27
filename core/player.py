@@ -1,5 +1,5 @@
 import pygame
-from util.constant import Colors, Screen
+from util.constant import Screen
 
 
 class Player:

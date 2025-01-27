@@ -1,7 +1,7 @@
 import pygame
 
 import ui.scenes.scene
-from ui.text import Text
+from ui.entities.text import Text
 from util.constant import Colors
 
 
@@ -13,6 +13,7 @@ class StartScene(ui.scenes.scene.Scene):
         self.button_pressed = False
 
     def key_down(self, keyname: int) -> None:
+        self.race_manager.setup("Dupa", "Kupa")
         self.button_pressed = True
 
     def display(self):

@@ -1,7 +1,7 @@
 import pygame
 import ui.scenes.scene
-from ui.player_view import PlayerView
-from util.constant import Screen, Colors, Bike
+from ui.entities.player_view import PlayerView
+from util.constant import Screen, Colors
 
 
 class RaceScene(ui.scenes.scene.Scene):
@@ -16,11 +16,21 @@ class RaceScene(ui.scenes.scene.Scene):
                                         color=Colors.BLUE)]
         self.race_manager.start_race()
 
+    # Workaround for development
     def key_down(self, keyname: int) -> None:
+        inc1 = 0
+        inc2 = 0
         if keyname == pygame.K_a:
-            self.race_manager.handle_data(0, Bike.MOVE_INCREMENT)
+            inc1 = 20
         elif keyname == pygame.K_l:
-            self.race_manager.handle_data(1, Bike.MOVE_INCREMENT)
+            inc2 = 20
+        data = {
+            "players": [
+                {"id": 0, "distance": self.race_manager.players[0].distance + inc1},
+                {"id": 1, "distance": self.race_manager.players[1].distance + inc2}
+            ]
+        }
+        self.race_manager.update(data)
 
     def display(self):
         self.screen.fill(Colors.WHITE)

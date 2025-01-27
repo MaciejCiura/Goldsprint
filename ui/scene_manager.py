@@ -36,7 +36,7 @@ class SceneManager:
 
     def _next_scene(self):
         if isinstance(self.active_scene, StartScene):
-            self.active_scene = CountdownScene(self.screen)
+            self.active_scene = CountdownScene(self.screen, self.race_manager)
 
         elif isinstance(self.active_scene, CountdownScene):
             self.active_scene = RaceScene(self.screen, self.race_manager)

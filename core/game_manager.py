@@ -1,7 +1,7 @@
 import pygame
 from core.player import Player
 from core.race_manager import RaceManager
-from core.scene_manager import SceneManager
+from ui.scene_manager import SceneManager
 from util.constant import Screen
 
 
@@ -11,12 +11,9 @@ class GameManager:
         self.scene_manager = None
         self.clock = None
         self.running = False
-        self.race_manager = None
+        self.race_manager = RaceManager()
 
     def setup(self):
-        players = {0: Player(0, "Player_1"), 1: Player(1, "Player_2")}
-        self.race_manager = RaceManager(players)
-
         pygame.init()
         pygame.display.set_caption(Screen.WINDOW_CAPTION)
         self.screen = pygame.display.set_mode((Screen.SCREEN_WIDTH, Screen.SCREEN_HEIGHT))
