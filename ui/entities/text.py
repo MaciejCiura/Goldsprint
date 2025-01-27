@@ -4,11 +4,12 @@ from util.constant import Colors, Screen
 
 
 class Text(Entity):
-    def __init__(self, text: str = "Default text", x=0 , y=0, font: pygame.font.Font = None):
+    def __init__(self, text: str = "Default text", x=0 , y=0, font_size=None):
         super().__init__(x, y)
         self.text = text
-        if font is None:
-            font = pygame.font.Font(None, Screen.FONT_SIZE)
+        if not font_size:
+            font_size = Screen.FONT_SIZE
+        font = pygame.font.Font(None, font_size)
         self.font = font
         self.antialiasing = True
         self.colour = Colors.BLACK

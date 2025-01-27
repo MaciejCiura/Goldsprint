@@ -6,14 +6,14 @@ from util.constant import Colors
 
 
 class StartScene(ui.scenes.scene.Scene):
-    def __init__(self, screen: pygame.Surface, race_manager):
+    def __init__(self, screen: pygame.Surface, controller):
         super().__init__(screen)
-        self.race_manager = race_manager
+        self.controller = controller
         self.text = Text("Goldsprint", 0, 0)
         self.button_pressed = False
 
     def key_down(self, keyname: int) -> None:
-        self.race_manager.setup("Dupa", "Kupa")
+        self.controller.init_race("Dupa", "Kupa")
         self.button_pressed = True
 
     def display(self):

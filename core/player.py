@@ -32,8 +32,7 @@ class Player:
         return
 
     def move(self, distance):
-        # self.time = timestamp
-        self.distance += distance
+        self.distance = distance
 
     def draw(self, screen):
         screen.blit(self.placeholder, (self.x + self.distance / 1, self.y))

@@ -9,7 +9,7 @@ class RaceManager:
         self.players = players
         self.finish_distance = finish_distance
         self.start_time = None
-        self.race_active = False
+        self.race_in_progress = False
         self.winners = None
 
     def setup(self, player_name_1, player_name_2, finish_distance=None):
@@ -18,18 +18,17 @@ class RaceManager:
         players = {0: Player(0, player_name_1), 1: Player(1, player_name_2)}
         self.players = players
         self.start_time = None
-        self.race_active = False
+        self.race_in_progress = False
         self.winners = None
 
     def countdown(self):
-        self.data_handler.start()
-        countdown_time = time.time()
-
-        while True:
-            data = self.data_handler.get_data()
-            if data and data["players"][0]["distance"] != 0 and data["players"][1]["distance"] !=0:
-                print("FALSTART", data)
-            else:
+        # countdown_time = time.time()
+        #
+        # while True:
+        #     data = self.data_handler.get_data()
+        #     if data and data["players"][0]["distance"] != 0 and data["players"][1]["distance"] !=0:
+        #         print("FALSTART", data)
+        #     else:
                 pass
 
     def add_player(self, player):
@@ -38,7 +37,7 @@ class RaceManager:
         self.players[player.id] = player
 
     def start_race(self):
-        self.race_active = True
+        self.race_in_progress = True
         for player in self.players.values():
             player.distance = 0
             player.racing = True
@@ -50,7 +49,7 @@ class RaceManager:
         for player_data in players_data:
             player = self.players[player_data["id"]]
             if player.racing:
-                player.distance = player_data["distance"]
+                player.move(player_data["distance"])
                 if player.distance >= self.finish_distance:  # TODO change to dynamic distance parameter
                     player.move(self.finish_distance - player.distance)
                     player.racing = False
@@ -60,17 +59,8 @@ class RaceManager:
 
         self._finish_race()
 
-        '''
-        if (!data_handler.empty())
-            process frame
-            read {[id: 0, distance, 100], [id: 1, distance, 120]}
-            for player in self.players
-                player.move(timestamp, distance)
-            if both players passed max_distance
-        '''
-
     def _finish_race(self):
-        if self.race_active:
+        if self.race_in_progress:
             if all(not player.racing for player in self.players.values()):
                 min_time = min(player.time for player in self.players.values() if player.time is not None)
                 self.winners = [
@@ -78,7 +68,7 @@ class RaceManager:
                 ]
                 for winner in self.winners:
                     winner.won = True
-                self.race_active = False
+                self.race_in_progress = False
 
     def racing(self):
         return any(player.racing for player in self.players.values())

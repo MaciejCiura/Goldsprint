@@ -1,35 +1,9 @@
-from abc import ABC, abstractmethod
-import socket
-import json
-
-
-class Device(ABC):
-    @abstractmethod
-    def connect(self):
-        pass
-
-    @abstractmethod
-    def disconnect(self):
-        pass
-
-    @abstractmethod
-    def send_configuration(self, sampling_rate):
-        pass
-
-    @abstractmethod
-    def read_data(self):
-        pass
-
-    @abstractmethod
-    def is_connected(self):
-        pass
-
 import socket
 import threading
 from typing import Callable
 
 
-class TCPDevice:
+class TcpDevice:
     def __init__(self, host: str = "192.168.4.1", port: int = 12345):
         """
         :param host: IP address of the ESP32 server.
@@ -98,36 +72,3 @@ class TCPDevice:
             print(f"Error receiving data: {e}")
         finally:
             self.disconnect()
-
-
-import serial
-import threading
-
-
-class SerialDevice:
-    def __init__(self):
-        self.serialPort = None
-        self.is_connected = False
-
-    def connect(self):
-        self.serialPort = serial.Serial(
-            port="COM3", baudrate=115200, bytesize=8, timeout=2, stopbits=serial.STOPBITS_ONE)
-        self.is_connected = True
-
-    def connected(self):
-        return self.is_connected
-
-    def read_data(self):
-        serial_string = self.serialPort.readline()
-        try:
-            print(serial_string.decode("Ascii"))
-        except Exception as e:
-            pass
-        return serial_string
-
-    def disconnect(self):
-        self.is_connected = False
-        self.serialPort.close()
-
-class SimulatedDevice(Device):
-    pass

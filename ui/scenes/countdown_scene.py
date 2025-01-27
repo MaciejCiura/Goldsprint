@@ -1,3 +1,5 @@
+import time
+
 import pygame
 
 import ui.scenes.scene
@@ -6,15 +8,24 @@ from util.constant import Colors
 
 
 class CountdownScene(ui.scenes.scene.Scene):
-    def __init__(self, screen: pygame.Surface, race_manager):
+    def __init__(self, screen: pygame.Surface, controller):
         super().__init__(screen)
-        self.text = Text("Ready...", 0, 0)
+        self.text = Text("Get ready...", 0, 0, font_size=84)
         self.button_pressed = False
-        self.race_manager = race_manager
+        self.controller = controller
+        self.countdown_values = None
+        self.last_update_time = time.time()
+        self.finished = False
 
     def setup(self) -> None:
         self.button_pressed = False
+        self.countdown_values = ["3", "2", "1", "GO!"]
         # self.race_manager.countdown()
+
+    def countdown(self):
+        self.controller.countdown()
+        time.sleep(1)
+
 
     def key_down(self, keyname: int) -> None:
         self.button_pressed = True
@@ -25,8 +36,14 @@ class CountdownScene(ui.scenes.scene.Scene):
         self.text.draw(self.screen)
 
     def update_state(self) -> bool:
-        # read names and other properites
-        # if run button pressed
+        current_time = time.time()
+        if self.countdown_values and current_time - self.last_update_time >= 1:
+            self.text.set(self.countdown_values.pop(0))
+            print(self.text.text)
+            self.text.update()
+            self.last_update_time = current_time
+            if not self.countdown_values:
+                self.button_pressed = True
         return self.button_pressed
 
 

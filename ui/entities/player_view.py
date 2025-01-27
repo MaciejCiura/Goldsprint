@@ -14,8 +14,8 @@ class PlayerView(Entity):
         self.placeholder = pygame.Surface((self.width, self.height))
         self.placeholder.fill(color)
         self.progressbar = Progressbar(self)
-        self.name_txt = Text(text=self.player.name, x=self.x, y=self.y + 30)
-        self.speed_txt = Text(x=self.x, y=self.y + 90)
+        self.name_txt = Text(text=self.player.name, x=self.x, y=self.y + 50, font_size=32)
+        self.speed_txt = Text(x=self.x, y=self.y + 110)
         self.time_txt = Text(x=self.x, y=self.y + 120)
         self.name_txt.visible = True
         self.speed_txt.visible = False

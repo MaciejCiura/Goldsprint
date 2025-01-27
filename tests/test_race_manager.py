@@ -17,8 +17,8 @@ def race_manager():
 def get_data(race_manager, inc1, inc2):
     players_data = {
         "players": [
-            {"id": 1, "distance": race_manager.players[0].distance + inc1},
-            {"id": 2, "distance": race_manager.players[1].distance + inc2}
+            {"id": 0, "distance": race_manager.players[0].distance + inc1},
+            {"id": 1, "distance": race_manager.players[1].distance + inc2}
         ]
     }
     return players_data
@@ -26,7 +26,7 @@ def get_data(race_manager, inc1, inc2):
 
 def test_start_race(race_manager):
     race_manager.start_race()
-    assert race_manager.race_active is True
+    assert race_manager.race_in_progress is True
     for player in race_manager.players.values():
         assert player.racing is True
         assert player.distance == 0
@@ -39,7 +39,7 @@ def test_handle_data(race_manager):
 
     assert race_manager.players[0].distance == 50
     assert race_manager.players[1].distance == 75
-    assert race_manager.race_active is True
+    assert race_manager.race_in_progress is True
 
 
 def test_finish_race(race_manager):
@@ -51,12 +51,12 @@ def test_finish_race(race_manager):
     # Bob hasn't finished yet
     assert race_manager.players[1].racing is True
     assert race_manager.players[1].won is False
-    assert race_manager.race_active is True
+    assert race_manager.race_in_progress is True
     time.sleep(1)
     race_manager.update(get_data(race_manager, 0, 100))  # Bob finishes
     assert race_manager.players[1].racing is False
     assert race_manager.players[1].won is False
-    assert race_manager.race_active is False
+    assert race_manager.race_in_progress is False
 
 
 def test_get_winners(race_manager):
@@ -75,6 +75,6 @@ def test_race_not_active_if_no_players(race_manager):
     race_manager.start_race()
     race_manager.update(get_data(race_manager, 100, 100))
 
-    assert race_manager.race_active is False
+    assert race_manager.race_in_progress is False
     winners = race_manager.get_winners()
     assert len(winners) == 2  # Tie
