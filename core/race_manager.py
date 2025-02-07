@@ -3,7 +3,7 @@ from core.player import Player
 
 
 class RaceManager:
-    def __init__(self, players=None, finish_distance=500):
+    def __init__(self, players=None, finish_distance=50):
         if players is None:
             players = {0: Player(0, "Player_1"), 1: Player(1, "Player_2")}
         self.players = players
@@ -11,6 +11,7 @@ class RaceManager:
         self.start_time = None
         self.race_in_progress = False
         self.winners = None
+        self.on_race_end = None
 
     def setup(self, player_name_1, player_name_2, finish_distance=None):
         if finish_distance is not None:
@@ -20,6 +21,10 @@ class RaceManager:
         self.start_time = None
         self.race_in_progress = False
         self.winners = None
+
+    def reset(self):
+        for player in self.players.values():
+            player.reset()
 
     def countdown(self):
         # countdown_time = time.time()
@@ -51,7 +56,6 @@ class RaceManager:
             if player.racing:
                 player.move(player_data["distance"])
                 if player.distance >= self.finish_distance:  # TODO change to dynamic distance parameter
-                    player.move(self.finish_distance - player.distance)
                     player.racing = False
                     player.time = time.time() - self.start_time
                     if not any(winner.won for winner in self.players.values()):
@@ -69,6 +73,7 @@ class RaceManager:
                 for winner in self.winners:
                     winner.won = True
                 self.race_in_progress = False
+                self.on_race_end()
 
     def racing(self):
         return any(player.racing for player in self.players.values())

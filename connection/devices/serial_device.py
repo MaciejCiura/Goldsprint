@@ -3,7 +3,7 @@ import serial
 from connection.devices.device import Device
 
 
-class SerialDevice:
+class SerialDevice(Device):
     def __init__(self, port="COM3", baudrate=115200, timeout=2):
         self.serialPort = None
         self.is_connected = False
@@ -26,6 +26,12 @@ class SerialDevice:
             print(f"Failed to connect: {e}")
             self.is_connected = False
 
+    def disconnect(self):
+        if self.serialPort and self.serialPort.is_open:
+            self.serialPort.close()
+            print("Disconnected from serial port.")
+        self.is_connected = False
+
     def send(self, command):
         if not self.is_connected:
             print("Device not connected. Cannot send configuration.")
@@ -36,7 +42,7 @@ class SerialDevice:
             except Exception as e:
                 print(f"Send failed: {e}")
 
-    def read_data(self):
+    def receive(self):
         if not self.is_connected:
             print("Device not connected. Cannot read data.")
             return None
@@ -52,9 +58,3 @@ class SerialDevice:
         except Exception as e:
             print(f"Error reading data: {e}")
             return None
-
-    def disconnect(self):
-        if self.serialPort and self.serialPort.is_open:
-            self.serialPort.close()
-            print("Disconnected from serial port.")
-        self.is_connected = False

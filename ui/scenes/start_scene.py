@@ -11,6 +11,7 @@ class StartScene(ui.scenes.scene.Scene):
         self.controller = controller
         self.text = Text("Goldsprint", 0, 0)
         self.button_pressed = False
+        self.controller.reset()
 
     def key_down(self, keyname: int) -> None:
         self.controller.init_race("Dupa", "Kupa")

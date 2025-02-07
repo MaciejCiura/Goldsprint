@@ -16,7 +16,6 @@ class RaceScene(ui.scenes.scene.Scene):
                                         color=Colors.BLUE)]
         self.controller.start_race()
 
-    # Workaround for development
     def key_down(self, keyname: int) -> None:
         pass
 
@@ -28,4 +27,4 @@ class RaceScene(ui.scenes.scene.Scene):
     def update_state(self) -> bool:
         for player_view in self.player_views:
             player_view.update()
-        return not self.controller.race_in_progress
+        return not self.controller.race_in_progress()

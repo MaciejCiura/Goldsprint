@@ -12,6 +12,8 @@ class DataHandler:
         self.data_callback = data_callback
 
     def start(self):
+        if self.running:
+            return
         self.device.connect()
         if not self.device.is_connected:
             raise ConnectionError("Device is not connected. Cannot start DataHandler.")
@@ -40,12 +42,13 @@ class DataHandler:
                     print("Device disconnected. Stopping thread.")
                     break
 
-                raw_data = self.device.read_data()
+                raw_data = self.device.receive()
                 if not raw_data:
                     continue
                 data = json.loads(raw_data)
 
                 if self.data_callback:
+                    print(data)
                     self.data_callback(data)
                 else:
                     print(data)
@@ -53,7 +56,7 @@ class DataHandler:
                 print(f"Failed to decode JSON: {e}")
             except Exception as e:
                 print(f"Error in read loop: {e}")
-            sleep(0.01)
+            sleep(0.1)
 
     def is_running(self):
         return self.running and self.thread.is_alive()

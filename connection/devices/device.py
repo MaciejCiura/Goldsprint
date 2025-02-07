@@ -11,13 +11,9 @@ class Device(ABC):
         pass
 
     @abstractmethod
-    def send_configuration(self, sampling_rate):
+    def send(self, sampling_rate):
         pass
 
     @abstractmethod
-    def read_data(self):
-        pass
-
-    @abstractmethod
-    def is_connected(self):
+    def receive(self):
         pass
