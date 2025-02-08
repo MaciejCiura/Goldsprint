@@ -6,12 +6,11 @@ from util.constant import Colors
 
 
 class WinnerScene(ui.scenes.scene.Scene):
-
     def __init__(self, screen: pygame.Surface, player_views):
         super().__init__(screen)
         self.player_views = player_views
-        for player_view in self.player_views:
-            player_view.progressbar.visible = False
+        # for player_view in self.player_views:
+        #     player_view.progressbar.visible = False
         self.button_pressed = False
 
     def _update_entities(self):

@@ -5,16 +5,14 @@ from util.constant import Screen, Colors
 
 
 class RaceScene(ui.scenes.scene.Scene):
-    def __init__(self, screen: pygame.Surface, controller):
+    def __init__(self, screen: pygame.Surface, players):
         super().__init__(screen)
-        self.controller = controller
-        self.player_views = [PlayerView(self.controller.race_manager.players[0],
+        self.player_views = [PlayerView(players[0],
                                         x=Screen.STARTING_POSITION, y=Screen.BIKE1_Y,
                                         color=Colors.RED),
-                             PlayerView(self.controller.race_manager.players[1],
+                             PlayerView(players[1],
                                         x=Screen.STARTING_POSITION, y=Screen.BIKE2_Y,
                                         color=Colors.BLUE)]
-        self.controller.start_race()
 
     def key_down(self, keyname: int) -> None:
         pass
@@ -27,4 +25,4 @@ class RaceScene(ui.scenes.scene.Scene):
     def update_state(self) -> bool:
         for player_view in self.player_views:
             player_view.update()
-        return not self.controller.race_in_progress()
+        return True

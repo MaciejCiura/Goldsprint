@@ -8,11 +8,10 @@ from util.constant import Colors
 
 
 class CountdownScene(ui.scenes.scene.Scene):
-    def __init__(self, screen: pygame.Surface, controller):
+    def __init__(self, screen: pygame.Surface):
         super().__init__(screen)
         self.text = Text("Get ready...", 0, 0, font_size=84)
         self.button_pressed = False
-        self.controller = controller
         self.countdown_values = None
         self.last_update_time = time.time()
         self.finished = False
@@ -20,10 +19,6 @@ class CountdownScene(ui.scenes.scene.Scene):
     def setup(self) -> None:
         self.button_pressed = False
         self.countdown_values = ["3", "2", "1", "GO!"]
-
-    def countdown(self):
-        self.controller.countdown()
-        time.sleep(1)
 
     def key_down(self, keyname: int) -> None:
         self.button_pressed = True

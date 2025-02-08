@@ -2,16 +2,20 @@ import json
 import threading
 import queue
 from time import sleep
+from core.events import event_manager
 
 
 class DataHandler:
-    def __init__(self, device, data_callback=None):
+    def __init__(self, device):
         self.device = device
         self.thread = None
         self.running = False
-        self.data_callback = data_callback
+        event_manager.subscribe("reset", self._on_reset)
+        event_manager.subscribe("init_race", self.init)
+        event_manager.subscribe("start_race", self._on_start_race)
+        event_manager.subscribe("race_finished", self._on_race_finished)
 
-    def start(self):
+    def init(self, *args, **kwargs):
         if self.running:
             return
         self.device.connect()
@@ -28,7 +32,16 @@ class DataHandler:
             self.thread.join()  # Wait for the thread to finish
         self.device.disconnect()
 
-    def send_configuration(self, command):
+    def _on_reset(self):
+        self._send_configuration("clear")
+
+    def _on_start_race(self, *args, **kwargs):
+        self._send_configuration("start")
+
+    def _on_race_finished(self, *args, **kwargs):
+        self._send_configuration("stop")
+
+    def _send_configuration(self, command):
         config = {"command": command}
         try:
             self.device.send((json.dumps(config) + '\n').encode())
@@ -46,12 +59,7 @@ class DataHandler:
                 if not raw_data:
                     continue
                 data = json.loads(raw_data)
-
-                if self.data_callback:
-                    print(data)
-                    self.data_callback(data)
-                else:
-                    print(data)
+                event_manager.emit("data_received", data)
             except json.JSONDecodeError as e:
                 print(f"Failed to decode JSON: {e}")
             except Exception as e:

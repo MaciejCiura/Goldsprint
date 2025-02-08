@@ -4,17 +4,18 @@ import ui.scenes.scene
 from ui.entities.text import Text
 from util.constant import Colors
 
+from core.events import event_manager
+
 
 class StartScene(ui.scenes.scene.Scene):
-    def __init__(self, screen: pygame.Surface, controller):
+    def __init__(self, screen: pygame.Surface):
         super().__init__(screen)
-        self.controller = controller
         self.text = Text("Goldsprint", 0, 0)
         self.button_pressed = False
-        self.controller.reset()
+
+        event_manager.emit("reset")
 
     def key_down(self, keyname: int) -> None:
-        self.controller.init_race("Dupa", "Kupa")
         self.button_pressed = True
 
     def display(self):
@@ -23,8 +24,6 @@ class StartScene(ui.scenes.scene.Scene):
         self.text.draw(self.screen)
 
     def update_state(self) -> bool:
-        # read names and other properites
-        # if run button pressed
         return self.button_pressed
 
 

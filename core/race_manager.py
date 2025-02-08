@@ -1,5 +1,14 @@
 import time
+from enum import Enum
 from core.player import Player
+from core.events import event_manager
+
+
+class RaceState(Enum):
+    IDLE = "idle"
+    COUNTDOWN = "countdown"
+    RACING = "racing"
+    FINISHED = "finished"
 
 
 class RaceManager:
@@ -9,11 +18,19 @@ class RaceManager:
         self.players = players
         self.finish_distance = finish_distance
         self.start_time = None
+        self.race_state = RaceState.IDLE
         self.race_in_progress = False
         self.winners = None
-        self.on_race_end = None
+        event_manager.subscribe("reset", self.reset())
+        event_manager.subscribe("init_race", self.init)
+        event_manager.subscribe("data_received", self.handle_data)
 
-    def setup(self, player_name_1, player_name_2, finish_distance=None):
+    def add_player(self, player):
+        if player.id in self.players:
+            raise ValueError(f"Player with id {player.id} already exists.")
+        self.players[player.id] = player
+
+    def init(self, player_name_1, player_name_2, finish_distance=None):
         if finish_distance is not None:
             self.finish_distance = finish_distance
         players = {0: Player(0, player_name_1), 1: Player(1, player_name_2)}
@@ -21,35 +38,56 @@ class RaceManager:
         self.start_time = None
         self.race_in_progress = False
         self.winners = None
+        self.countdown()
 
     def reset(self):
+        self.race_state = RaceState.IDLE
         for player in self.players.values():
             player.reset()
 
     def countdown(self):
-        # countdown_time = time.time()
-        #
-        # while True:
-        #     data = self.data_handler.get_data()
-        #     if data and data["players"][0]["distance"] != 0 and data["players"][1]["distance"] !=0:
-        #         print("FALSTART", data)
-        #     else:
-                pass
-
-    def add_player(self, player):
-        if player.id in self.players:
-            raise ValueError(f"Player with id {player.id} already exists.")
-        self.players[player.id] = player
+        event_manager.emit("countdown")
+        self.race_state = RaceState.COUNTDOWN
+        print("Get ready...")
+        time.sleep(1)
+        print("3")
+        time.sleep(1)
+        print("2")
+        time.sleep(1)
+        print("1")
+        time.sleep(1)
+        print("GO!")
+        self.start_race()
 
     def start_race(self):
         self.race_in_progress = True
+        self.race_state = RaceState.RACING
         for player in self.players.values():
             player.distance = 0
             player.racing = True
             player.won = False
         self.start_time = time.time()
+        event_manager.emit("start_race", self.players)
+
+    def handle_data(self, data):
+        if self.race_state == RaceState.IDLE:
+            pass
+        elif self.race_state == RaceState.COUNTDOWN:
+            self.falstart()
+        elif self.race_state == RaceState.RACING:
+            self.update(data)
+        elif self.race_state == RaceState.FINISHED:
+            pass
+
+    def falstart(self):
+        print("DUPADUPAFALSTARTDUPADUPA")
 
     def update(self, data):
+        if not self.race_in_progress:
+            print("falstart!!!")
+            # emit falstart event
+            pass
+
         players_data = data["players"]
         for player_data in players_data:
             player = self.players[player_data["id"]]
@@ -61,6 +99,7 @@ class RaceManager:
                     if not any(winner.won for winner in self.players.values()):
                         player.won = True
 
+        event_manager.emit("race_updated", self.players)
         self._finish_race()
 
     def _finish_race(self):
@@ -73,7 +112,8 @@ class RaceManager:
                 for winner in self.winners:
                     winner.won = True
                 self.race_in_progress = False
-                self.on_race_end()
+                self.race_state = RaceState.FINISHED
+                event_manager.emit("race_finished", self.players)
 
     def racing(self):
         return any(player.racing for player in self.players.values())

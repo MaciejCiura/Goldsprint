@@ -1,20 +1,19 @@
 import pprint
 from connection.data_handler import DataHandler
+from core.events import event_manager
+
 
 class Controller:
     def __init__(self, device, race_manager):
         self.race_manager = race_manager
         self.data_handler = DataHandler(device)
-        self.data_handler.data_callback = self.handle_data
-        self.race_manager.on_race_end = self.stop_race
+
+        event_manager.subscribe("race_finished", self._on_race_finished)
+        event_manager.subscribe("race_updated", self._on_race_updated)
 
     def reset(self):
         self.race_manager.reset()
-        self.data_handler.send_configuration("clear")
-
-    def init_race(self, player_name_1, player_name_2, finish_distance=None):
-        self.race_manager.setup(player_name_1, player_name_2, finish_distance)
-        self.data_handler.start()
+        # self.data_handler.send_configuration("clear")
 
     def countdown(self):
         # check for fault start and so on
@@ -22,11 +21,11 @@ class Controller:
 
     def start_race(self):
         self.race_manager.start_race()
-        self.data_handler.send_configuration("start")
+        # self.data_handler.send_configuration("start")
 
     def stop_race(self):
         print(self.race_manager.players)
-        self.data_handler.send_configuration("stop")
+        # self.data_handler.send_configuration("stop")
 
     def handle_data(self, data):
         self.race_manager.update(data)
@@ -37,3 +36,10 @@ class Controller:
 
     def log_race(self):
         pass
+
+    def _on_race_finished(self, players):
+        print("FINISHED", players)
+        # self.data_handler.send_configuration("stop")
+
+    def _on_race_updated(self, players):
+        print(players)
