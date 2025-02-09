@@ -14,15 +14,11 @@ class RaceScene(ui.scenes.scene.Scene):
                                         x=Screen.STARTING_POSITION, y=Screen.BIKE2_Y,
                                         color=Colors.BLUE)]
 
-    def key_down(self, keyname: int) -> None:
-        pass
-
     def display(self):
         self.screen.fill(Colors.WHITE)
         for player_view in self.player_views:
             player_view.draw(self.screen)
 
-    def update_state(self) -> bool:
+    def update_state(self):
         for player_view in self.player_views:
             player_view.update()
-        return True

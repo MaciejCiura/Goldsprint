@@ -8,9 +8,6 @@ class Controller:
         self.race_manager = race_manager
         self.data_handler = DataHandler(device)
 
-        event_manager.subscribe("race_finished", self._on_race_finished)
-        event_manager.subscribe("race_updated", self._on_race_updated)
-
     def reset(self):
         self.race_manager.reset()
         # self.data_handler.send_configuration("clear")
@@ -36,10 +33,3 @@ class Controller:
 
     def log_race(self):
         pass
-
-    def _on_race_finished(self, players):
-        print("FINISHED", players)
-        # self.data_handler.send_configuration("stop")
-
-    def _on_race_updated(self, players):
-        print(players)

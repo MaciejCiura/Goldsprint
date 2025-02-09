@@ -11,12 +11,25 @@ class PlayerView(Entity):
                          height=Bike.BIKE_HEIGHT, width=Bike.BIKE_WIDTH, color=Colors.BLACK)
         self.player = player
         self.color = color
-        self.placeholder = pygame.Surface((self.width, self.height))
-        self.placeholder.fill(color)
+        self.placeholder = None
+        self.name_txt = None
+        self.speed_txt = None
+        self.time_txt = None
         self.progressbar = Progressbar(self)
+        self._set_player_view()
+        self._set_text()
+
+    def _set_player_view(self):
+        self.placeholder = pygame.Surface((self.width, self.height))
+        if self.player.won:
+            self.placeholder.fill(Colors.GOLD)
+        else:
+            self.placeholder.fill(self.color)
+
+    def _set_text(self):
         self.name_txt = Text(text=self.player.name, x=self.x, y=self.y + 50, font_size=32)
-        self.speed_txt = Text(x=self.x, y=self.y + 110)
-        self.time_txt = Text(x=self.x, y=self.y + 120)
+        self.speed_txt = Text(text=str(self.player.speed), x=self.x, y=self.y + 110)
+        self.time_txt = Text(text=str(self.player.time), x=self.x, y=self.y + 120)
         self.name_txt.visible = True
         self.speed_txt.visible = False
         self.time_txt.visible = False
@@ -24,10 +37,8 @@ class PlayerView(Entity):
     def update(self):
         self.progressbar.update()
         if not self.player.racing:
-            self.time_txt.set(str(self.player.time))
-            self.time_txt.visible = True
-            if self.player.won:
-                self.placeholder.fill(Colors.GOLD)
+            self._set_player_view()
+            self.time_txt.set(str(self.player.time), visible=True)
 
     def draw(self, screen):
         screen.blit(self.placeholder, (self.x + self.player.distance / 1, self.y))

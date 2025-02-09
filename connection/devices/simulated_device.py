@@ -33,6 +33,5 @@ class SimulatedDevice(Device):
             return None
         json_data = (json.dumps(self.simulated_data) + '\n').encode()
         self.simulated_data["players"][0]["distance"] += 1
-        self.simulated_data["players"][1]["distance"] += 1
+        self.simulated_data["players"][1]["distance"] += 2
         return json_data
-

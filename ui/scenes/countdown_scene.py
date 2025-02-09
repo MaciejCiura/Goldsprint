@@ -20,22 +20,14 @@ class CountdownScene(ui.scenes.scene.Scene):
         self.button_pressed = False
         self.countdown_values = ["3", "2", "1", "GO!"]
 
-    def key_down(self, keyname: int) -> None:
-        self.button_pressed = True
-
     def display(self):
         self.screen.fill(Colors.WHITE)
         self.text.center()
         self.text.draw(self.screen)
 
-    def update_state(self) -> bool:
+    def update_state(self):
         current_time = time.time()
         if self.countdown_values and current_time - self.last_update_time >= 1:
             self.last_update_time = current_time
             self.text.set(self.countdown_values.pop(0))
             self.text.update()
-            if not self.countdown_values:
-                self.button_pressed = True
-        return self.button_pressed
-
-

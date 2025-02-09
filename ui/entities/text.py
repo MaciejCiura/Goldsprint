@@ -17,10 +17,11 @@ class Text(Entity):
         self.img = self.font.render(self.text, self.antialiasing, self.colour, self.background)
         self.rect = self.img.get_rect(topleft=(self.x, self.y))
 
-    def set(self, string):
+    def set(self, string, visible=True):
         self.text = string
         self.img = self.font.render(self.text, self.antialiasing, self.colour, self.background)
         self.rect = self.img.get_rect(topleft=(self.x, self.y))
+        self.visible = visible
 
     def center(self):
         self.rect = self.img.get_rect(center=(Screen.SCREEN_WIDTH / 2, Screen.FONT_SIZE/2))

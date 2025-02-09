@@ -4,14 +4,34 @@ from ui.scenes.race_scene import RaceScene
 from ui.scenes.start_scene import StartScene
 from ui.scenes.winner_scene import WinnerScene
 from util.constant import Screen
-
+from core.events import event_manager
 
 class SceneManager:
-    def __init__(self, screen, controller):
+    def __init__(self, screen):
         self.screen = screen
         self.active_scene = StartScene(screen)
         self.clock = pygame.time.Clock()
-        self.controller = controller
+
+        event_manager.subscribe("reset", self._on_reset)
+        event_manager.subscribe("init_race", self._on_init_race)
+        event_manager.subscribe("start_race", self._on_start_race)
+        event_manager.subscribe("race_finished", self._on_race_finished)
+
+    def _on_reset(self):
+        self.active_scene = StartScene(self.screen)
+        self.active_scene.setup()
+
+    def _on_init_race(self, *args, **kwargs):
+        self.active_scene = CountdownScene(self.screen)
+        self.active_scene.setup()
+
+    def _on_start_race(self, players):
+        self.active_scene = RaceScene(self.screen, players)
+        self.active_scene.setup()
+
+    def _on_race_finished(self, players):
+        self.active_scene = WinnerScene(self.screen, players)
+        self.active_scene.setup()
 
     def key_down(self, keyname: int) -> None:
         # if isinstance(self.active_scene, StartScene):
@@ -24,25 +44,9 @@ class SceneManager:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     return False
-                self.active_scene.key_down(event.key)
         self.active_scene.display()
 
-        if self.active_scene.update_state():
-            self._next_scene()
-            self.active_scene.setup()
+        self.active_scene.update_state()
 
         self.clock.tick(Screen.FRAMERATE)
         return True
-
-    def _next_scene(self):
-        if isinstance(self.active_scene, StartScene):
-            self.active_scene = CountdownScene(self.screen)
-
-        elif isinstance(self.active_scene, CountdownScene):
-            self.active_scene = RaceScene(self.screen, self.controller.race_manager.players)
-
-        elif isinstance(self.active_scene, RaceScene):
-            self.active_scene = WinnerScene(self.screen, self.active_scene.player_views)
-
-        elif isinstance(self.active_scene, WinnerScene):
-            self.active_scene = StartScene(self.screen)

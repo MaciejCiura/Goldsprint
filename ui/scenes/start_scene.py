@@ -13,17 +13,10 @@ class StartScene(ui.scenes.scene.Scene):
         self.text = Text("Goldsprint", 0, 0)
         self.button_pressed = False
 
-        event_manager.emit("reset")
-
-    def key_down(self, keyname: int) -> None:
-        self.button_pressed = True
-
     def display(self):
         self.screen.fill(Colors.WHITE)
         self.text.center()
         self.text.draw(self.screen)
 
-    def update_state(self) -> bool:
-        return self.button_pressed
-
-
+    def update_state(self):
+        pass
