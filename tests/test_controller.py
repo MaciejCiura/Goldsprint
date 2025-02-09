@@ -2,16 +2,16 @@ import time
 
 import pytest
 from unittest.mock import Mock
-from core.controller import Controller
+from core.race_controller import RaceController
 from core.race_manager import RaceManager
-from connection.devices.simulated_device import SimulatedDevice
+from io.sensors.devices.simulated_device import SimulatedDevice
 
 
 @pytest.fixture
 def controller():
     device = SimulatedDevice()
     race_manager = RaceManager()
-    return Controller(device, race_manager)
+    return RaceController(device, race_manager)
 
 
 def test_controller_initialization(controller):

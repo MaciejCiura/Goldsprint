@@ -1,5 +1,5 @@
 import json
-from connection.devices.device import Device
+from core.sensors.devices.device import Device
 
 
 class SimulatedDevice(Device):

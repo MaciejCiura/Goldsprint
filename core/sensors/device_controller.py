@@ -5,7 +5,7 @@ from time import sleep
 from core.events import event_manager
 
 
-class DataHandler:
+class DeviceController:
     def __init__(self, device):
         self.device = device
         self.thread = None

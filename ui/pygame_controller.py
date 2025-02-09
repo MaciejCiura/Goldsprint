@@ -6,12 +6,26 @@ from ui.scenes.winner_scene import WinnerScene
 from util.constant import Screen
 from core.events import event_manager
 
-class SceneManager:
-    def __init__(self, screen):
-        self.screen = screen
-        self.active_scene = StartScene(screen)
-        self.clock = pygame.time.Clock()
 
+class PyGameManager:
+    def __init__(self):
+        self.screen = None
+        self.active_scene = None
+        self.clock = None
+        self._setup()
+        self._subscribe()
+
+    def __del__(self):
+        pygame.quit()
+
+    def _setup(self):
+        pygame.init()
+        pygame.display.set_caption(Screen.WINDOW_CAPTION)
+        self.screen = pygame.display.set_mode((Screen.SCREEN_WIDTH, Screen.SCREEN_HEIGHT))
+        self.clock = pygame.time.Clock()
+        self.active_scene = StartScene(self.screen)
+
+    def _subscribe(self):
         event_manager.subscribe("reset", self._on_reset)
         event_manager.subscribe("init_race", self._on_init_race)
         event_manager.subscribe("start_race", self._on_start_race)
@@ -33,10 +47,6 @@ class SceneManager:
         self.active_scene = WinnerScene(self.screen, players)
         self.active_scene.setup()
 
-    def key_down(self, keyname: int) -> None:
-        # if isinstance(self.active_scene, StartScene):
-        pass
-
     def run(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -44,9 +54,8 @@ class SceneManager:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     return False
-        self.active_scene.display()
-
         self.active_scene.update_state()
-
+        self.active_scene.display()
         self.clock.tick(Screen.FRAMERATE)
+        pygame.display.flip()
         return True

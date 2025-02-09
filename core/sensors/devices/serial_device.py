@@ -1,6 +1,5 @@
-import json
 import serial
-from connection.devices.device import Device
+from io.sensors.devices.device import Device
 
 
 class SerialDevice(Device):

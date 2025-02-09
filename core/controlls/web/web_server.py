@@ -1,7 +1,7 @@
-# web_server.py
+# web.py
 from flask import Flask, request, jsonify
 import threading
-from core import controller  # przykładowy moduł sterujący aplikacją
+from core import race_controller  # przykładowy moduł sterujący aplikacją
 
 app = Flask(__name__)
 
