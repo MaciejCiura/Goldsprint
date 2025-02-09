@@ -10,6 +10,9 @@ class DeviceController:
         self.device = device
         self.thread = None
         self.running = False
+        self._subscribe()
+
+    def _subscribe(self):
         event_manager.subscribe("reset", self._on_reset)
         event_manager.subscribe("init_race", self.init)
         event_manager.subscribe("start_race", self._on_start_race)
@@ -22,14 +25,14 @@ class DeviceController:
         if not self.device.is_connected:
             raise ConnectionError("Device is not connected. Cannot start DataHandler.")
         self.running = True
-        print("Starting thread...")  # Debugging statement
+        print("Starting thread...")
         self.thread = threading.Thread(target=self._read_loop, daemon=True)
         self.thread.start()
 
     def disconnect(self):
         self.running = False
         if self.thread and self.thread.is_alive():
-            self.thread.join()  # Wait for the thread to finish
+            self.thread.join()
         self.device.disconnect()
 
     def _on_reset(self):

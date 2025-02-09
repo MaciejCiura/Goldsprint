@@ -40,11 +40,7 @@ class RaceManager:
         self.winners = None
         self.countdown()
 
-    def reset(self):
-        self.race_state = RaceState.IDLE
-        for player in self.players.values():
-            player.reset()
-
+    # TODO: Make coroutine
     def countdown(self):
         event_manager.emit("countdown")
         self.race_state = RaceState.COUNTDOWN
@@ -69,6 +65,11 @@ class RaceManager:
         self.start_time = time.time()
         event_manager.emit("start_race", self.players)
 
+    def reset(self):
+        self.race_state = RaceState.IDLE
+        for player in self.players.values():
+            player.reset()
+
     def handle_data(self, data):
         if self.race_state == RaceState.IDLE:
             pass
@@ -87,7 +88,6 @@ class RaceManager:
             print("falstart!!!")
             # emit falstart event
             pass
-
         players_data = data["players"]
         for player_data in players_data:
             player = self.players[player_data["id"]]

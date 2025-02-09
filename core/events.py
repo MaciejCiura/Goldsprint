@@ -1,11 +1,13 @@
 from typing import Callable, Dict, List
 import threading
+import queue
 
 
 class EventManager:
     def __init__(self):
         self.listeners: Dict[str, List[Callable]] = {}
         self.lock = threading.Lock()
+        self._callback_queue = queue.Queue()
 
     def subscribe(self, event_name: str, callback: Callable):
         with self.lock:
@@ -20,10 +22,20 @@ class EventManager:
 
     def emit(self, event_name: str, *args, **kwargs):
         with self.lock:
-            if event_name in self.listeners:
-                for callback in self.listeners[event_name]:
-                    threading.Thread(target=callback, args=args, kwargs=kwargs).start()
+            callbacks = self.listeners.get(event_name, []).copy()
+        for callback in callbacks:
+            self._callback_queue.put((callback, args, kwargs))
+
+    def process_callbacks(self):
+        while True:
+            try:
+                callback, args, kwargs = self._callback_queue.get_nowait()
+            except queue.Empty:
+                break
+            try:
+                callback(*args, **kwargs)
+            except Exception as e:
+                print(f"Error executing callback: {e}")
 
 
-# Global instance
 event_manager = EventManager()
