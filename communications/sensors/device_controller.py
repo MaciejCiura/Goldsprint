@@ -15,7 +15,7 @@ class DeviceController:
     def _subscribe(self):
         event_manager.subscribe("reset", self._on_reset)
         event_manager.subscribe("init_race", self.init)
-        event_manager.subscribe("start_race", self._on_start_race)
+        event_manager.subscribe("countdown", self._on_countdown)
         event_manager.subscribe("race_finished", self._on_race_finished)
 
     def init(self, *args, **kwargs):
@@ -38,7 +38,7 @@ class DeviceController:
     def _on_reset(self):
         self._send_configuration("clear")
 
-    def _on_start_race(self, *args, **kwargs):
+    def _on_countdown(self, *args, **kwargs):
         self._send_configuration("start")
 
     def _on_race_finished(self, *args, **kwargs):

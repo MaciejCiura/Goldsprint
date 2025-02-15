@@ -27,7 +27,7 @@ class PyGameManager:
 
     def _subscribe(self):
         event_manager.subscribe("reset", self._on_reset)
-        event_manager.subscribe("init_race", self._on_init_race)
+        event_manager.subscribe("countdown", self._on_countdown)
         event_manager.subscribe("race_started", self._on_start_race)
         event_manager.subscribe("race_finished", self._on_race_finished)
 
@@ -35,7 +35,7 @@ class PyGameManager:
         self.active_scene = StartScene(self.screen)
         self.active_scene.setup()
 
-    def _on_init_race(self, *args, **kwargs):
+    def _on_countdown(self, *args, **kwargs):
         self.active_scene = CountdownScene(self.screen)
         self.active_scene.setup()
 

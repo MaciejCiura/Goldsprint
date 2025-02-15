@@ -25,7 +25,7 @@ async def cli_loop():
             event_manager.emit("init_race", players)
             print(f"Race initialized for Player_2 and Player_2.")
         elif command == "start":
-            event_manager.emit("start_race")
+            event_manager.emit("countdown")
             print(f"Race started between Player_2 and Player_2.")
         elif command == "stop":
             event_manager.emit("stop_race")

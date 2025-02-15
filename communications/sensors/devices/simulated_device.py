@@ -1,6 +1,8 @@
 import json
+
 from communications.sensors.devices.device import Device
 
+from core.events import event_manager
 
 class SimulatedDevice(Device):
     def __init__(self):
@@ -9,6 +11,12 @@ class SimulatedDevice(Device):
                 {"id": 0, "distance": 0},
                 {"id": 1, "distance": 0}]}
         self.running = False
+        self.addition = 0
+        self.start_time = None
+        event_manager.subscribe("race_started", self._on_race_started)
+
+    def _on_race_started(self, *args, **kwargs):
+        self.addition = 1
 
     def connect(self):
         self.is_connected = True
@@ -32,6 +40,6 @@ class SimulatedDevice(Device):
         if not self.running or not self.is_connected:
             return None
         json_data = (json.dumps(self.simulated_data) + '\n').encode()
-        self.simulated_data["players"][0]["distance"] += 1
-        self.simulated_data["players"][1]["distance"] += 2
+        self.simulated_data["players"][0]["distance"] += self.addition
+        self.simulated_data["players"][1]["distance"] += 2*self.addition
         return json_data

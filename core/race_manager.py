@@ -11,10 +11,8 @@ class RaceManager:
         self.finish_distance = None
         self.state_data = RaceState()
 
-        self.start_time = None
-        self.winners = None
         event_manager.subscribe("reset", self.reset)
-        event_manager.subscribe("start_race", self.countdown)
+        event_manager.subscribe("countdown", self.countdown)
         event_manager.subscribe("init_race", self.setup_race)
         event_manager.subscribe("data_received", self.update)
 
@@ -94,7 +92,7 @@ class RaceManager:
         player_status.distance = min(self.race_config.finish_distance, player_data["distance"])
         if player_status.distance >= self.race_config.finish_distance:
             player_status.is_racing = False
-            player_status.time = time.time()
+            player_status.finish_time = time.time() - self.state_data.start_time
             if not any(player.is_winner for player in self.state_data.player_statuses.values()):
                 player_status.is_winner = True
 

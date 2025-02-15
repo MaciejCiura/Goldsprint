@@ -16,8 +16,8 @@ class RacePhase(Enum):
 
 @dataclass
 class RaceConfig:
-    finish_distance: float = 25.0
-    countdown_seconds: int = 1
+    finish_distance: float = 100.0
+    countdown_seconds: int = 4
 
 
 @dataclass

@@ -6,6 +6,8 @@ from communications.sensors.device_controller import DeviceController
 from core.race_manager import RaceManager
 from core.events import event_manager
 
+from ui.pygame_controller import PyGameManager
+
 
 def start_async_loop(loop):
     asyncio.set_event_loop(loop)
@@ -28,14 +30,14 @@ def run_pygame():
     input_controller = CliHandler(loop)
     device_controller = DeviceController(SimulatedDevice())
     race_manager = RaceManager()
-    # game = PyGameManager()
+    game = PyGameManager()
 
     running = True
     while running:
         # continue
         event_manager.process_callbacks()
         # race_manager.update()
-        # running = game.run()
+        running = game.run()
 
     loop.call_soon_threadsafe(loop.stop)
     loop_thread.join()
