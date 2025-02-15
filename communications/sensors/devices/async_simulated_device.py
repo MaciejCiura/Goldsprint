@@ -1,6 +1,6 @@
 import json
 import asyncio
-from core.sensors.devices.device import Device
+from communications.sensors.devices.device import Device
 
 
 class SimulatedDevice(Device):

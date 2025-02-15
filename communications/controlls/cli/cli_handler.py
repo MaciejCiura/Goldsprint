@@ -1,6 +1,6 @@
 import asyncio
-import threading
 import aioconsole
+from core.player import Player
 from core.events import event_manager
 
 
@@ -20,7 +20,9 @@ async def cli_loop():
         command = command.strip().lower()
 
         if command == "init":
-            event_manager.emit("init_race", "Player_1", "Player_2")
+            # fetch players from DB
+            players = [Player(0, "Player_1"), Player(1, "Player_2")]
+            event_manager.emit("init_race", players)
             print(f"Race initialized for Player_2 and Player_2.")
         elif command == "start":
             event_manager.emit("start_race")

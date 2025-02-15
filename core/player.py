@@ -1,35 +1,17 @@
-import pygame
-from util.constant import Screen
+from dataclasses import dataclass
 
 
+@dataclass
 class Player:
-    def __init__(self, player_id, name):
-        self.id = player_id
-        self.name = name
-        self.distance = 0
-        self.speed = 0
-        self.time = None
-        self.racing = False
-        self.won = False
+    player_id: int
+    name: str
 
-    def reset(self):
-        self.distance = 0
-        self.speed = 0
-        self.time = None
-        self.racing = False
-        self.won = False
 
-    def move(self, distance):
-        self.distance = distance
-
-    def set_name(self, name):
-        self.name = name
-
-    def set_time(self, time):
-        self.time = time
-
-    def __repr__(self):
-        return f"Player(id={self.id}, name='{self.name}', distance={self.distance}, speed={self.speed}, time={self.time})"
-
-    def __str__(self):
-        return f"Player {self.id}: {self.name} | Distance: {self.distance}m | Speed: {self.speed} m/s | Time: {self.time}s"
+@dataclass
+class PlayerRaceStatus:
+    player: Player
+    distance: float = 0.0
+    speed: float = 0.0
+    finish_time: float = 0.0
+    is_racing: bool = True
+    is_winner: bool = False

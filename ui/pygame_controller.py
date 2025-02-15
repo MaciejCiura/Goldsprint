@@ -28,7 +28,7 @@ class PyGameManager:
     def _subscribe(self):
         event_manager.subscribe("reset", self._on_reset)
         event_manager.subscribe("init_race", self._on_init_race)
-        event_manager.subscribe("start_race", self._on_start_race)
+        event_manager.subscribe("race_started", self._on_start_race)
         event_manager.subscribe("race_finished", self._on_race_finished)
 
     def _on_reset(self):

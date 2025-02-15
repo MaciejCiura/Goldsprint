@@ -1,128 +1,117 @@
 import time
-from enum import Enum
-from core.player import Player
+from logging import Logger
+from core.player import PlayerRaceStatus
+from core.race_data import RaceConfig, RacePhase, RaceState
 from core.events import event_manager
 
 
-class RaceState(Enum):
-    IDLE = "idle"
-    COUNTDOWN = "countdown"
-    RACING = "racing"
-    FINISHED = "finished"
-
-
 class RaceManager:
-    def __init__(self, players=None, finish_distance=50):
-        if players is None:
-            players = {0: Player(0, "Player_1"), 1: Player(1, "Player_2")}
-        self.players = players
-        self.finish_distance = finish_distance
+    def __init__(self):
+        self.race_config = None
+        self.finish_distance = None
+        self.state_data = RaceState()
+
         self.start_time = None
-        self.race_state = RaceState.IDLE
-        self.race_in_progress = False
         self.winners = None
-        event_manager.subscribe("reset", self.reset())
-        event_manager.subscribe("init_race", self.init)
-        event_manager.subscribe("data_received", self.handle_data)
+        event_manager.subscribe("reset", self.reset)
+        event_manager.subscribe("start_race", self.countdown)
+        event_manager.subscribe("init_race", self.setup_race)
+        event_manager.subscribe("data_received", self.update)
 
-    def add_player(self, player):
-        if player.id in self.players:
-            raise ValueError(f"Player with id {player.id} already exists.")
-        self.players[player.id] = player
+    def setup_race(self, players, finish_distance=None):
+        if self.state_data.phase != RacePhase.IDLE:
+            pass
 
-    def init(self, player_name_1, player_name_2, finish_distance=None):
+        self.race_config = RaceConfig()
         if finish_distance is not None:
-            self.finish_distance = finish_distance
-        players = {0: Player(0, player_name_1), 1: Player(1, player_name_2)}
-        self.players = players
-        self.start_time = None
-        self.race_in_progress = False
-        self.winners = None
-        self.countdown()
+            self.race_config.finish_distance = finish_distance
 
-    # TODO: Make coroutine
+        for player in players:
+            self.state_data.player_statuses[player.player_id] = PlayerRaceStatus(player=player)
+        self._transition(RacePhase.READY)
+
     def countdown(self):
-        event_manager.emit("countdown")
-        self.race_state = RaceState.COUNTDOWN
-        print("Get ready...")
-        time.sleep(1)
-        print("3")
-        time.sleep(1)
-        print("2")
-        time.sleep(1)
-        print("1")
-        time.sleep(1)
-        print("GO!")
-        self.start_race()
+        self.state_data.countdown_start = time.time()
+        self._transition(RacePhase.COUNTDOWN)
+        print("Countdown")
 
-    def start_race(self):
-        self.race_in_progress = True
-        self.race_state = RaceState.RACING
-        for player in self.players.values():
-            player.distance = 0
-            player.racing = True
-            player.won = False
-        self.start_time = time.time()
-        event_manager.emit("start_race", self.players)
+    def update(self, data=None):
+        if self.state_data.phase == RacePhase.IDLE:
+            pass
+        elif self.state_data.phase == RacePhase.READY:
+            pass
+        elif self.state_data.phase == RacePhase.COUNTDOWN:
+            self._update_countdown(data)
+        elif self.state_data.phase == RacePhase.RACING:
+            self._update_race(data)
+        elif self.state_data.phase == RacePhase.FINISHED:
+            pass
 
     def reset(self):
-        self.race_state = RaceState.IDLE
-        for player in self.players.values():
-            player.reset()
+        self._transition(RacePhase.IDLE)
 
-    def handle_data(self, data):
-        if self.race_state == RaceState.IDLE:
-            pass
-        elif self.race_state == RaceState.COUNTDOWN:
-            self.falstart()
-        elif self.race_state == RaceState.RACING:
-            self.update(data)
-        elif self.race_state == RaceState.FINISHED:
-            pass
+    def _update_countdown(self, data):
+        if data is not None:
+            players_data = data["players"]
 
-    def falstart(self):
+            for player_data in players_data:
+                player_status = self.state_data.player_statuses[player_data["id"]]
+
+                if player_status.distance > 0:
+                    # self.false_start()
+                    # return
+                    pass
+
+        elapsed = time.time() - self.state_data.countdown_start
+        remaining = self.race_config.countdown_seconds - elapsed
+        self.state_data.countdown_remaining = max(0.0, remaining)
+        print(self.state_data.countdown_remaining)
+        if remaining <= 0:
+            self._transition(RacePhase.RACING)
+            self.state_data.start_time = time.time()
+            event_manager.emit("race_started", self.state_data.player_statuses)
+
+    def false_start(self):
+        self._transition(RacePhase.FALSE_START)
         print("DUPADUPAFALSTARTDUPADUPA")
 
-    def update(self, data):
-        if not self.race_in_progress:
-            print("falstart!!!")
-            # emit falstart event
-            pass
-        players_data = data["players"]
-        for player_data in players_data:
-            player = self.players[player_data["id"]]
-            if player.racing:
-                player.move(player_data["distance"])
-                if player.distance >= self.finish_distance:  # TODO change to dynamic distance parameter
-                    player.racing = False
-                    player.time = time.time() - self.start_time
-                    if not any(winner.won for winner in self.players.values()):
-                        player.won = True
+    def _update_race(self, data):
+        if data is None:
+            return
 
-        event_manager.emit("race_updated", self.players)
+        players_data = data["players"]
+
+        for player_data in players_data:
+            player_status = self.state_data.player_statuses[player_data["id"]]
+            if not player_status.is_racing:
+                continue
+            self._update_player(player_status, player_data)
+
+        event_manager.emit("race_updated", self.state_data.player_statuses)
         self._finish_race()
 
+    def _update_player(self, player_status, player_data):
+        player_status.distance = min(self.race_config.finish_distance, player_data["distance"])
+        if player_status.distance >= self.race_config.finish_distance:
+            player_status.is_racing = False
+            player_status.time = time.time()
+            if not any(player.is_winner for player in self.state_data.player_statuses.values()):
+                player_status.is_winner = True
+
     def _finish_race(self):
-        if self.race_in_progress:
-            if all(not player.racing for player in self.players.values()):
-                min_time = min(player.time for player in self.players.values() if player.time is not None)
-                self.winners = [
-                    player for player in self.players.values() if player.time == min_time
-                ]
-                for winner in self.winners:
-                    winner.won = True
-                self.race_in_progress = False
-                self.race_state = RaceState.FINISHED
-                event_manager.emit("race_finished", self.players)
+        if self.state_data.phase == RacePhase.RACING:
+            if all(not player.is_racing for player in self.state_data.player_statuses.values()):
+                self._transition(RacePhase.FINISHED)
+                self._check_result()
 
-    def racing(self):
-        return any(player.racing for player in self.players.values())
+                event_manager.emit("race_finished", self.state_data.player_statuses)
 
-    def get_players(self):
-        return self.players.values
+    def _check_result(self):
+        min_time = min(player.finish_time for player in self.state_data.player_statuses.values() if player.finish_time is not None)
 
-    def get_winners(self):
-        return self.winners
+        for player_status in self.state_data.player_statuses.values():
+            player_status.is_winner = player_status.finish_time == min_time
 
-
-
+    def _transition(self, phase):
+        print(f"Phase {phase}")
+        self.state_data.phase = phase

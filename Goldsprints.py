@@ -1,11 +1,10 @@
 import asyncio
 import threading
-from core.controlls.cli.cli_handler import CliHandler
-from core.sensors.devices.simulated_device import SimulatedDevice
-from core.sensors.device_controller import DeviceController
+from communications.controlls.cli.cli_handler import CliHandler
+from communications.sensors.devices.simulated_device import SimulatedDevice
+from communications.sensors.device_controller import DeviceController
 from core.race_manager import RaceManager
 from core.events import event_manager
-from ui.pygame_controller import PyGameManager
 
 
 def start_async_loop(loop):
@@ -35,6 +34,7 @@ def run_pygame():
     while running:
         # continue
         event_manager.process_callbacks()
+        # race_manager.update()
         # running = game.run()
 
     loop.call_soon_threadsafe(loop.stop)

@@ -62,6 +62,7 @@ class DeviceController:
                 if not raw_data:
                     continue
                 data = json.loads(raw_data)
+                # print(data)
                 event_manager.emit("data_received", data)
             except json.JSONDecodeError as e:
                 print(f"Failed to decode JSON: {e}")
