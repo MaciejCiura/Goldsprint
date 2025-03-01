@@ -15,10 +15,14 @@ class RaceManager:
         event_manager.subscribe("countdown", self.countdown)
         event_manager.subscribe("init_race", self.setup_race)
         event_manager.subscribe("data_received", self.update)
+        event_manager.subscribe("status", self.status)
+
+    def status(self):
+        print(self.state_data.phase)
 
     def setup_race(self, players, finish_distance=None):
-        if self.state_data.phase != RacePhase.IDLE:
-            pass
+        if self.state_data.phase is not RacePhase.IDLE:
+            return
 
         self.race_config = RaceConfig()
         if finish_distance is not None:
@@ -29,21 +33,24 @@ class RaceManager:
         self._transition(RacePhase.READY)
 
     def countdown(self):
+        if self.state_data.phase is not RacePhase.READY:
+            return
+
         self.state_data.countdown_start = time.time()
         self._transition(RacePhase.COUNTDOWN)
         print("Countdown")
 
     def update(self, data=None):
         if self.state_data.phase == RacePhase.IDLE:
-            pass
+            return
         elif self.state_data.phase == RacePhase.READY:
-            pass
+            return
         elif self.state_data.phase == RacePhase.COUNTDOWN:
             self._update_countdown(data)
         elif self.state_data.phase == RacePhase.RACING:
             self._update_race(data)
         elif self.state_data.phase == RacePhase.FINISHED:
-            pass
+            return
 
     def reset(self):
         self._transition(RacePhase.IDLE)

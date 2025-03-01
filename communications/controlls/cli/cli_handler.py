@@ -33,8 +33,11 @@ async def cli_loop():
         elif command == "reset":
             event_manager.emit("reset")
             print("Race data reset.")
+        elif command == "status":
+            event_manager.emit("status")
 
         if command == "exit":
             print("Exiting CLI race manager.")
+            event_manager.emit("exit")
             break
 

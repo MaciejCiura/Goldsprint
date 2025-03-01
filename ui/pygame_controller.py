@@ -12,6 +12,7 @@ class PyGameManager:
         self.screen = None
         self.active_scene = None
         self.clock = None
+        self.running = True
         self._setup()
         self._subscribe()
 
@@ -30,6 +31,7 @@ class PyGameManager:
         event_manager.subscribe("countdown", self._on_countdown)
         event_manager.subscribe("race_started", self._on_start_race)
         event_manager.subscribe("race_finished", self._on_race_finished)
+        event_manager.subscribe("exit", self._on_exit)
 
     def _on_reset(self):
         self.active_scene = StartScene(self.screen)
@@ -47,6 +49,9 @@ class PyGameManager:
         self.active_scene = WinnerScene(self.screen, players)
         self.active_scene.setup()
 
+    def _on_exit(self):
+        self.running = False
+
     def run(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -58,4 +63,4 @@ class PyGameManager:
         self.active_scene.display()
         self.clock.tick(Screen.FRAMERATE)
         pygame.display.flip()
-        return True
+        return self.running
